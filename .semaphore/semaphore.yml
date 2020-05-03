@@ -1,0 +1,48 @@
+version: v1.0
+
+name: Go-Many-Ways
+
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+blocks:
+  - name: Build project
+    task:
+      jobs:
+      - name: go get & build
+        commands:
+          - checkout
+
+          - sem-version go 1.13
+
+          - go mod download
+          - go build
+
+  - name: Check code style
+    task:
+      jobs:
+      - name: gofmt
+        commands:
+          - checkout
+          - sem-version go 1.13
+          - sudo apt install -y gccgo-go
+          - gofmt -l -s -w .
+
+  # - name: Run tests
+  #   task:
+  #     prologue:
+  #       commands:
+  #         - checkout
+  #         - sem-version go 1.14
+  #     jobs:
+  #     - name: go test controller
+  #       commands:
+  #         - go mod download
+  #         - go test ./controller/*.go -v
+
+  #     - name: go test service
+  #       commands:
+  #         - go mod download
+  #         - go test ./service/*.go -v
