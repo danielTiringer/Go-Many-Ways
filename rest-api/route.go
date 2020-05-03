@@ -46,7 +46,6 @@ func addPost(w http.ResponseWriter, r *http.Request) {
 	post.Id = len(posts) + 1
 	posts = append(posts, post)
 
-
 	result, err := json.Marshal(posts)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
