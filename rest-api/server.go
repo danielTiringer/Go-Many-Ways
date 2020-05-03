@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	router := mux.NewRouter();
+	router := mux.NewRouter()
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Up and running...")
 	})
@@ -18,5 +18,5 @@ func main() {
 	router.HandleFunc("/posts", getPosts).Methods("GET")
 
 	log.Println("Server listening on port", os.Getenv("PORT"))
-	log.Fatalln(http.ListenAndServe(":" + os.Getenv("PORT"), router))
+	log.Fatalln(http.ListenAndServe(":"+os.Getenv("PORT"), router))
 }

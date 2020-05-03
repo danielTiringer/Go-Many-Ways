@@ -16,7 +16,7 @@ var (
 )
 
 func init() {
-	posts = []Post{ Post{ Id: 1, Title: "title 1", Text: "text 1" }}
+	posts = []Post{{Id: 1, Title: "title 1", Text: "text 1"}}
 }
 
 func getPosts(w http.ResponseWriter, r *http.Request) {
