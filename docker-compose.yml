@@ -1,45 +1,47 @@
 version: '3.7'
 
 services:
-  mysql:
-    container_name: mysql
-    image: mysql:5.7
-    restart: always
-    ports:
-      - '3306:3306'
-    volumes:
-      - go-mysql:/var/lib/postgresql/data
-    networks:
-      - golang
+  # mysql:
+  #   container_name: mysql
+  #   image: mysql:5.7
+  #   restart: always
+  #   ports:
+  #     - '3306:3306'
+  #   volumes:
+  #     - go-mysql:/var/lib/postgresql/data
+  #   networks:
+  #     - golang
 
   go:
     container_name: product-api
     build: ./Docker/Golang
+    command: go run server.go
     volumes:
       - .:${GO_PROJECT_DIR}
     ports:
-      - "9090:9090"
-    links:
-      - mysql
+      - "${PORT}:${PORT}"
+    # links:
+    #   - mysql
     environment:
+      PORT: "${PORT}"
       GO_WORK_DIR: "${GO_PROJECT_DIR}/rest-api"
     networks:
       - golang
 
-  migrate:
-    container_name: migrate
-    image: migrate/migrate
-    volumes:
-      - .:/migrations
-    command: ["-path", "/migrations", "-database",  "${DB_URI}", "up", "3"]
-    links:
-      - mysql
-    networks:
-      golang:
-        aliases:
-          - database
+  # migrate:
+  #   container_name: migrate
+  #   image: migrate/migrate
+  #   volumes:
+  #     - .:/migrations
+  #   command: ["-path", "/migrations", "-database",  "${DB_URI}", "up", "3"]
+  #   links:
+  #     - mysql
+  #   networks:
+  #     golang:
+  #       aliases:
+  #         - database
 
 networks:
   golang:
-volumes:
-  go-mysql:
+# volumes:
+#   go-mysql:
