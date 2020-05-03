@@ -15,7 +15,6 @@ services:
   go:
     container_name: product-api
     build: ./Docker/Golang
-    command: go run server.go
     volumes:
       - .:${GO_PROJECT_DIR}
     ports:

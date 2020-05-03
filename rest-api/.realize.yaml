@@ -2,17 +2,29 @@ settings:
   legacy:
     force: false
     interval: 0s
+server:
+  status: false
+  open: false
+  port: 8000
+  host: localhost
 schema:
-- name: rest-api
+- name: product-api
   path: .
-  commands: {}
+  commands:
+    install:
+      status: true
+    run:
+      status: true
   watcher:
-    extensions:
-    - go
     paths:
     - /
-    ignore:
-      paths:
-      - .git
-      - .realize
-      - vendor
+    ignored_paths:
+    - .git
+    - .realize
+    - vendor
+    extensions:
+    - go
+    - html
+    - css
+    - js
+    - yaml
