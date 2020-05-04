@@ -2,40 +2,34 @@ package main
 
 import (
 	"encoding/json"
+	"math/rand"
 	"net/http"
-)
 
-type Post struct {
-	Id    int    `json:"id"`
-	Title string `json:"title"`
-	Text  string `json:"text"`
-}
+	"github.com/danielTiringer/Go-Many-Ways/rest-api/entity"
+	"github.com/danielTiringer/Go-Many-Ways/rest-api/repository"
+)
 
 var (
-	posts []Post
+	repo repository.PostRepository = repository.NewPostRepository()
 )
-
-func init() {
-	posts = []Post{{Id: 1, Title: "title 1", Text: "text 1"}}
-}
 
 func getPosts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
-	result, err := json.Marshal(posts)
+	posts, err := repo.FindAll()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{ "error": "Error mashalling the posts array." }`))
+		w.Write([]byte(`{ "error": "Error getting the posts." }`))
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write(result)
+	json.NewEncoder(w).Encode(posts)
 }
 
 func addPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
-	var post Post
+	var post entity.Post
 	err := json.NewDecoder(r.Body).Decode(&post)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -43,16 +37,9 @@ func addPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post.Id = len(posts) + 1
-	posts = append(posts, post)
-
-	result, err := json.Marshal(posts)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{ "error": "Error mashalling the posts array." }`))
-		return
-	}
+	post.ID = rand.Int63()
+	repo.Save(&post)
 
 	w.WriteHeader(http.StatusCreated)
-	w.Write(result)
+	json.NewEncoder(w).Encode(post)
 }
