@@ -33,19 +33,20 @@ blocks:
           - cd rest-api
           - gofmt -l -s -w .
 
-  # - name: Run tests
-  #   task:
-  #     prologue:
-  #       commands:
-  #         - checkout
-  #         - sem-version go 1.14
-  #     jobs:
-  #     - name: go test controller
-  #       commands:
-  #         - go mod download
-  #         - go test ./controller/*.go -v
+  - name: Run tests
+    task:
+      prologue:
+        commands:
+          - checkout
+          - sem-version go 1.14
+          - cd rest-api
+      jobs:
+      - name: go test controller
+        commands:
+          - go mod download
+          # - go test ./controller/*.go -v
 
-  #     - name: go test service
-  #       commands:
-  #         - go mod download
-  #         - go test ./service/*.go -v
+      - name: go test service
+        commands:
+          - go mod download
+          - go test ./service/*.go -v
