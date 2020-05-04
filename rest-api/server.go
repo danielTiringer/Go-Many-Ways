@@ -7,11 +7,13 @@ import (
 
 	controller "github.com/danielTiringer/Go-Many-Ways/rest-api/controller"
 	router "github.com/danielTiringer/Go-Many-Ways/rest-api/http"
+	repository "github.com/danielTiringer/Go-Many-Ways/rest-api/repository"
 	service "github.com/danielTiringer/Go-Many-Ways/rest-api/service"
 )
 
 var (
-	postService    service.PostService       = service.NewPostService()
+	postRepository repository.PostRepository = repository.NewFirestoreRepository()
+	postService    service.PostService       = service.NewPostService(postRepository)
 	postController controller.PostController = controller.NewPostController(postService)
 	httpRouter     router.Router             = router.NewChiRouter()
 )

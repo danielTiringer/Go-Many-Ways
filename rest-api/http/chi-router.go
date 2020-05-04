@@ -7,11 +7,11 @@ import (
 	"github.com/go-chi/chi"
 )
 
+type chiRouter struct{}
+
 var (
 	chiDispatcher = chi.NewRouter()
 )
-
-type chiRouter struct{}
 
 func NewChiRouter() Router {
 	return &chiRouter{}
