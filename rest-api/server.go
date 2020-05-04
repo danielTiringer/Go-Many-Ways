@@ -2,22 +2,23 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
+	router "github.com/danielTiringer/Go-Many-Ways/rest-api/http"
+)
+
+var (
+	httpRouter router.Router = router.NewMuxRouter()
 )
 
 func main() {
-	router := mux.NewRouter()
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	httpRouter.GET("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Up and running...")
 	})
 
-	router.HandleFunc("/posts", getPosts).Methods("GET")
-	router.HandleFunc("/posts", addPost).Methods("POST")
+	// httpRouter.GET("/posts", getPosts)
+	// httpRouter.POST("/posts", addPost)
 
-	log.Println("Server listening on port", os.Getenv("PORT"))
-	log.Fatalln(http.ListenAndServe(":"+os.Getenv("PORT"), router))
+	httpRouter.SERVE(":" + os.Getenv("PORT"))
 }
