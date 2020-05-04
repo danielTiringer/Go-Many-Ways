@@ -21,6 +21,8 @@ services:
       - "${PORT}:${PORT}"
     # links:
     #   - mysql
+    env_file:
+      - .env
     environment:
       PORT: "${PORT}"
       GO_WORK_DIR: "${GO_PROJECT_DIR}/rest-api"
