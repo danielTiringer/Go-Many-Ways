@@ -13,7 +13,7 @@ services:
   #     - golang
 
   go:
-    container_name: product-api
+    container_name: go-api
     build: ./Docker/Golang
     volumes:
       - .:${GO_PROJECT_DIR}
@@ -24,8 +24,8 @@ services:
     env_file:
       - .env
     environment:
-      PORT: "${PORT}"
       GO_WORK_DIR: "${GO_PROJECT_DIR}/rest-api"
+      GOOGLE_APPLICATION_CREDENTIALS: "${GO_PROJECT_DIR}/rest-api/repository/${GOOGLE_CREDENTIALS_JSON}"
     networks:
       - golang
 
