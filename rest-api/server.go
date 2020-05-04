@@ -5,11 +5,13 @@ import (
 	"net/http"
 	"os"
 
+	controller "github.com/danielTiringer/Go-Many-Ways/rest-api/controller"
 	router "github.com/danielTiringer/Go-Many-Ways/rest-api/http"
 )
 
 var (
 	httpRouter router.Router = router.NewMuxRouter()
+	postController controller.PostController = controller.NewPostController()
 )
 
 func main() {
@@ -17,8 +19,8 @@ func main() {
 		fmt.Fprintln(w, "Up and running...")
 	})
 
-	// httpRouter.GET("/posts", getPosts)
-	// httpRouter.POST("/posts", addPost)
+	httpRouter.GET("/posts", postController.GetPosts)
+	httpRouter.POST("/posts", postController.AddPost)
 
 	httpRouter.SERVE(":" + os.Getenv("PORT"))
 }

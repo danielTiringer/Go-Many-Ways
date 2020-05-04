@@ -9,6 +9,8 @@ import (
 	"github.com/danielTiringer/Go-Many-Ways/rest-api/service"
 )
 
+type controller struct{}
+
 var (
 	postService service.PostService = service.NewPostService()
 )
@@ -18,7 +20,11 @@ type PostController interface {
 	AddPost(http.ResponseWriter, *http.Request)
 }
 
-func GetPosts(w http.ResponseWriter, r *http.Request) {
+func NewPostController() PostController {
+	return &controller{}
+}
+
+func (*controller) GetPosts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
 	posts, err := postService.FindAll()
@@ -32,7 +38,7 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(posts)
 }
 
-func AddPost(w http.ResponseWriter, r *http.Request) {
+func (*controller) AddPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	var post entity.Post
 	err := json.NewDecoder(r.Body).Decode(&post)
