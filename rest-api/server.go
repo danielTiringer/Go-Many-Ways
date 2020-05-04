@@ -7,11 +7,13 @@ import (
 
 	controller "github.com/danielTiringer/Go-Many-Ways/rest-api/controller"
 	router "github.com/danielTiringer/Go-Many-Ways/rest-api/http"
+	service "github.com/danielTiringer/Go-Many-Ways/rest-api/service"
 )
 
 var (
+	postService    service.PostService       = service.NewPostService()
+	postController controller.PostController = controller.NewPostController(postService)
 	httpRouter     router.Router             = router.NewChiRouter()
-	postController controller.PostController = controller.NewPostController()
 )
 
 func main() {
