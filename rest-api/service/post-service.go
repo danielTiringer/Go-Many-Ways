@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"math/rand"
+	"strconv"
 
 	"github.com/danielTiringer/Go-Many-Ways/rest-api/entity"
 	"github.com/danielTiringer/Go-Many-Ways/rest-api/repository"
@@ -11,6 +12,7 @@ import (
 type PostService interface {
 	Validate(post *entity.Post) error
 	FindAll() ([]entity.Post, error)
+	FindByID(id string) (*entity.Post, error)
 	Create(post *entity.Post) (*entity.Post, error)
 }
 
@@ -41,6 +43,14 @@ func (*service) Validate(post *entity.Post) error {
 
 func (*service) FindAll() ([]entity.Post, error) {
 	return repo.FindAll()
+}
+
+func (*service) FindByID(id string) (*entity.Post, error) {
+	_, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	return repo.FindByID(id)
 }
 
 func (*service) Create(post *entity.Post) (*entity.Post, error) {

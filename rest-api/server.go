@@ -12,10 +12,10 @@ import (
 )
 
 var (
-	postRepository repository.PostRepository = repository.NewFirestoreRepository()
+	postRepository repository.PostRepository = repository.NewSQLiteRepository()
 	postService    service.PostService       = service.NewPostService(postRepository)
 	postController controller.PostController = controller.NewPostController(postService)
-	httpRouter     router.Router             = router.NewChiRouter()
+	httpRouter     router.Router             = router.NewMuxRouter()
 )
 
 func main() {
@@ -24,6 +24,7 @@ func main() {
 	})
 
 	httpRouter.GET("/posts", postController.GetPosts)
+	httpRouter.GET("/posts/{id}", postController.GetPostByID)
 	httpRouter.POST("/posts", postController.AddPost)
 
 	httpRouter.SERVE(":" + os.Getenv("PORT"))

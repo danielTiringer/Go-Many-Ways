@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"log"
-	"os"
 
 	"cloud.google.com/go/firestore"
 	"google.golang.org/api/iterator"
@@ -11,21 +10,55 @@ import (
 	"github.com/danielTiringer/Go-Many-Ways/rest-api/entity"
 )
 
-type repo struct{}
-
-func NewFirestoreRepository() PostRepository {
-	return &repo{}
+type repo struct{
+	CollectionName string
 }
 
-var (
-	projectId      string = os.Getenv("FIRESTORE_PROJECT_ID")
-	collectionName string = os.Getenv("FIRESTORE_COLLECTION_NAME")
+func NewFirestoreRepository(collectionName string) PostRepository {
+	return &repo{
+		CollectionName: collectionName,
+	}
+}
+
+const (
+	projectID string = "blog-on-the-go-a4202"
 )
 
-func (*repo) FindAll() ([]entity.Post, error) {
+func (r *repo) Save(post *entity.Post) (*entity.Post, error) {
 	ctx := context.Background()
 
-	client, err := firestore.NewClient(ctx, projectId)
+	client, err := firestore.NewClient(ctx, projectID)
+
+	if err != nil {
+		log.Fatalf("Failed to create a Firestore client: %v", err)
+		return nil, err
+	}
+
+	defer client.Close()
+
+	_, _, err = client.Collection(r.CollectionName).Add(ctx, map[string]interface{}{
+		"ID":    post.ID,
+		"Title": post.Title,
+		"Text":  post.Text,
+	})
+
+	if err != nil {
+		log.Fatalf("Failed to add a new post to the Firestore client: %v", err)
+		return nil, err
+	}
+
+	return post, nil
+}
+
+func (r *repo) FindByID(id string) (*entity.Post, error) {
+	return nil, nil
+}
+
+func (r *repo) FindAll() ([]entity.Post, error) {
+	ctx := context.Background()
+
+	client, err := firestore.NewClient(ctx, projectID)
+
 	if err != nil {
 		log.Fatalf("Failed to create a Firestore client: %v", err)
 		return nil, err
@@ -34,13 +67,15 @@ func (*repo) FindAll() ([]entity.Post, error) {
 	defer client.Close()
 
 	var posts []entity.Post
-	it := client.Collection(collectionName).Documents(ctx)
+	it := client.Collection(r.CollectionName).Documents(ctx)
 
 	for {
 		doc, err := it.Next()
+
 		if err == iterator.Done {
 			break
 		}
+
 		if err != nil {
 			log.Fatalf("Failed to iterate the list of posts: %v", err)
 			return nil, err
@@ -51,31 +86,12 @@ func (*repo) FindAll() ([]entity.Post, error) {
 			Title: doc.Data()["Title"].(string),
 			Text:  doc.Data()["Text"].(string),
 		}
+
 		posts = append(posts, post)
 	}
+
 	return posts, nil
 }
-
-func (*repo) Save(post *entity.Post) (*entity.Post, error) {
-	ctx := context.Background()
-
-	client, err := firestore.NewClient(ctx, projectId)
-	if err != nil {
-		log.Fatalf("Failed to create a Firestore client: %v", err)
-		return nil, err
-	}
-
-	defer client.Close()
-
-	_, _, err = client.Collection(collectionName).Add(ctx, map[string]interface{}{
-		"ID":    post.ID,
-		"Title": post.Title,
-		"Text":  post.Text,
-	})
-	if err != nil {
-		log.Fatalf("Failed to save the new post: %v", err)
-		return nil, err
-	}
-
-	return post, nil
+func (r *repo) Delete(post *entity.Post) error {
+	return nil
 }

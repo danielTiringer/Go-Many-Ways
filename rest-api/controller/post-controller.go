@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/danielTiringer/Go-Many-Ways/rest-api/entity"
 	"github.com/danielTiringer/Go-Many-Ways/rest-api/errors"
@@ -17,6 +18,7 @@ var (
 
 type PostController interface {
 	GetPosts(http.ResponseWriter, *http.Request)
+	GetPostByID(w http.ResponseWriter, r *http.Request)
 	AddPost(http.ResponseWriter, *http.Request)
 }
 
@@ -37,6 +39,22 @@ func (*controller) GetPosts(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(posts)
+}
+
+func (*controller) GetPostByID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	postID := strings.Split(r.URL.Path, "/")[2]
+
+	post, err := postService.FindByID(postID)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(errors.ServiceError{Message: "No posts found!"})
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(post)
 }
 
 func (*controller) AddPost(w http.ResponseWriter, r *http.Request) {

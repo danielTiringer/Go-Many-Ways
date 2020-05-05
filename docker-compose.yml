@@ -1,16 +1,18 @@
 version: '3.7'
 
 services:
-  # mysql:
-  #   container_name: mysql
-  #   image: mysql:5.7
-  #   restart: always
-  #   ports:
-  #     - '3306:3306'
-  #   volumes:
-  #     - go-mysql:/var/lib/postgresql/data
-  #   networks:
-  #     - golang
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - go-mysql:/var/lib/mysql
+    networks:
+      - golang
 
   go:
     container_name: go-api
@@ -19,8 +21,8 @@ services:
       - .:${GO_PROJECT_DIR}
     ports:
       - "${PORT}:${PORT}"
-    # links:
-    #   - mysql
+    links:
+      - mysql
     env_file:
       - .env
     environment:
@@ -44,5 +46,5 @@ services:
 
 networks:
   golang:
-# volumes:
-#   go-mysql:
+volumes:
+  go-mysql:
