@@ -7,6 +7,7 @@ require (
 	firebase.google.com/go v3.12.1+incompatible
 	github.com/go-chi/chi v4.1.1+incompatible
 	github.com/gorilla/mux v1.7.4
+	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/stretchr/testify v1.5.1
 	google.golang.org/api v0.20.0
 )
