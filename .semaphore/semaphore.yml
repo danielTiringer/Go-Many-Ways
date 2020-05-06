@@ -44,7 +44,7 @@ blocks:
       - name: go test controller
         commands:
           - go mod download
-          # - go test ./controller/*.go -v
+          - go test ./controller/*.go -v
 
       - name: go test service
         commands:

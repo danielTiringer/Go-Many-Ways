@@ -10,7 +10,7 @@ import (
 	"github.com/danielTiringer/Go-Many-Ways/rest-api/entity"
 )
 
-type repo struct{
+type repo struct {
 	CollectionName string
 }
 
